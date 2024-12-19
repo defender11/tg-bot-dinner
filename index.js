@@ -17,6 +17,8 @@ const locationInfo = [
   {name: 'Чайхана'},
   {name: 'У Бабушки'},
   {name: 'Лисёнок'},
+  {name: 'Челентано'},
+  {name: 'Лепим Сами'},
 ];
 const locationInfoCount = (locationInfo.length - 1);
 
