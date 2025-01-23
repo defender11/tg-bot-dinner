@@ -15,6 +15,14 @@ export default {
     ]
   },
   
+  getHumanDate: function (date) {
+    return new Date(date).toLocaleString('ru', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  },
+  
   getHolidayDates: function(){
     return this.getHolidaysInfo().map((holiday) => holiday.date);
   }

@@ -21,6 +21,10 @@ const commands = [
     command: "holidays",
     description: "Нерабочие праздничные дни 2025"
   },
+  {
+    command: "try_your_luck",
+    description: "Попытать удачу"
+  },
 ];
 telegramBot.setMyCommands(commands);
 
@@ -63,17 +67,17 @@ async function sendDailyMessage() {
   }
 }
 
-// Запуск cron задачи в 12:30 каждый день
-cron.schedule("30 12 * * *", () => {
+function send() {
   console.log("Проверяем рабочий день и отправляем сообщение...");
   sendDailyMessage();
-});
+}
+
+// Запуск cron задачи в 12:35 каждый день
+cron.schedule("35 12 * * *", send);
+
 
 //
-// cron.schedule("*/1 * * * *", () => {
-//   console.log("Проверяем рабочий день и отправляем сообщение...");
-//   sendDailyMessage();
-// });
+// cron.schedule("*/1 * * * *", send);
 
 telegramBot.onText(/\/locations/, async (msg) => {
   let locationListString = '';
@@ -94,7 +98,7 @@ telegramBot.onText(/\/holidays/, async (msg) => {
   let holidaysListString = '';
   
   Holidays.getHolidaysInfo().forEach((holiday, idx) => {
-    holidaysListString += `${holiday.date}: ${holiday.label} \n`;
+    holidaysListString += `${holiday.getHumanDate(holiday.date)} | ${holiday.label} \n`;
   });
 
   if (
@@ -104,5 +108,7 @@ telegramBot.onText(/\/holidays/, async (msg) => {
     telegramBot.sendMessage(chanelID, holidaysListString);
   }
 });
+
+telegramBot.onText(/\/try_your_luck/, send);
 
 telegramBot.on("polling_error", err => console.log(err.data.error.message));
