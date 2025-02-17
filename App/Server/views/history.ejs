@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Интерактивный пример</title>
+</head>
+<body>
+<h1><%= data.message %></h1>
+<button id="myButton"><%= data.buttonText %></button>
+<p id="myText"></p>
+
+<script>
+  const button = document.getElementById('myButton');
+  const text = document.getElementById('myText');
+
+  button.addEventListener('click', function() {
+    text.textContent = '<%= data.message %>';
+  });
+</script>
+</body>
+</html>
