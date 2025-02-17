@@ -1,3 +1,6 @@
+import * as Location from '../../Common/location.js';
+import axios from "axios";
+
 export default class Index {
   
   #app = null;
@@ -7,11 +10,22 @@ export default class Index {
   
   init() {
     this.#app.get('/', (req, res) => {
+      
       const data = {
-        message: 'Привет из Node.js!',
-        buttonText: 'Нажми меня'
+        tplName: 'statistic.ejs',
+        h1: 'Статистика',
+        buttonText: 'Нажми меня',
+        headerTitle: 'Статистика',
+        
+        payload: {
+          locations: Location.default.getLocations(),
+          locationsCount: Location.default.getLocationCount(),
+        }
       };
-      res.render('history', {data: data});
+      
+      res.render('index', {
+        data: data
+      });
     });
   }
 }

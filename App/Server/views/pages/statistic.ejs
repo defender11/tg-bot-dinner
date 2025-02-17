@@ -1,0 +1,108 @@
+<style>
+
+</style>
+
+<h6>Locations Count: <%= data.payload.locationsCount %></h6>
+
+<div class="content">
+    <table class="table table-bordered table-striped table-hover table-condensed table-responsive">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Visits</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        <% data.payload.locations.forEach(function(location, index) { %>
+            <tr>
+                <th scope="row"><%= index %></th>
+                <td><%= location.name %></td>
+                <td>
+                    <!-- Button trigger modal -->
+                    <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-modal_id="<%= index %>"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop<%= index %>"
+                    >
+                        <%= location.visits || 0 %>
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop<%= index %>" data-bs-backdrop="static"
+                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel<%= index %>"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5"
+                                        id="staticBackdropLabel<%= index %>"><%= location.name %></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <table class="table table-bordered table-striped table-hover table-condensed table-responsive">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Weather</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+
+                                        <tr>
+                                            <td>13 марта, 2024</td>
+                                            <td>13' | Облачно, с прояснениями</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+  const modalButton = document.querySelectorAll('button[data-bs-toggle="modal"]');
+
+  modalButton.forEach(function (button) {
+    button.addEventListener('click', async function (e) {
+      const modalID = e.target.dataset.modal_id;
+
+      const modal = document.querySelector('#staticBackdrop' + modalID);
+      const modalBody = modal.querySelector('.modal-body');
+
+      try {
+        const response = await fetch(`/statistic/location/${modalID}`);
+
+        if (!response.ok) {
+          throw new Error('Ошибка сети');
+        }
+
+        const data = await response.json();
+        console.log(response)
+        console.log(modal);
+        console.log(modalBody);
+        console.log(data);
+        console.log('#staticBackdrop' + modalID);
+
+      } catch (error) {
+        console.error('Ошибка при получении статистики:', error.message);
+      }
+
+
+    });
+  });
+</script>
