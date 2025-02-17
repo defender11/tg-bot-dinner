@@ -4,5 +4,5 @@ import Server from "./App/Server/index.js";
 const tgWorkEnvironment = new TGWorkEnvironment();
 const server = new Server();
 
-tgWorkEnvironment.init();
-server.init();
+// tgWorkEnvironment.init();
+await server.init();

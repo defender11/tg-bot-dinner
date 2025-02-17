@@ -1,45 +1,40 @@
-import {localIP} from "./../Common/os.js";
-import express from "express";
-import {Sequelize, DataTypes} from "sequelize";
-import {hotReloadMiddleware} from "@devmade/express-hot-reload";
-import path from "path";
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import ServerConfig from "./ServerConfig.js";
 
 export default class Index {
+  
   constructor(props) {
   }
   
-  init() {
+  async init() {
+    // Сделаем метод init асинхронным
+    let app;
+    let controllerNames = [];
     
-    const app = express();
-    const port = process.env.EXPRESS_PORT;
+    try {
+      const serverConfig = new ServerConfig();
+      app = await serverConfig.init();
+      controllerNames = await serverConfig.getControllerListFileName();
+      // Предполагаем, что init может быть асинхронным
+    } catch (error) {
+      console.error("Ошибка инициализации ServerConfig:", error);
+      return;
+      // Прерываем выполнение, если ServerConfig не инициализировался
+    }
     
-    const sequelize = new Sequelize({
-      dialect: 'sqlite',
-      storage: './db.sqlite'
-    });
-    
-    app.use(express.json());
-    app.use(hotReloadMiddleware({watchFolders: ["./App"], verbose: true}));
-    
-    app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'ejs');
-    
-    
-    app.get('/', (req, res) => {
-      const data = {
-        message: 'Привет из Node.js!',
-        buttonText: 'Нажми меня'
-      };
-      res.render('history', {data: data});
-    });
-    
-    
-    app.listen(port, localIP, () => {
-      console.log(`Server listening at http://${localIP}:${port}`);
-    });
+    await Promise.all(controllerNames.map(async (fileName) => {
+      // Используем Promise.all для параллельной загрузки
+      try {
+         console.log(fileName)
+        const module = await import(`./Controllers/${fileName}`);
+        if (module.default) {
+          const controller = new module.default(app);
+          await controller.init();
+        } else {
+          console.warn(`Controller ${name} не имеет экспорта по умолчанию`);
+        }
+      } catch (err) {
+        console.error(`Ошибка загрузки или инициализации Controller ${name}:`, err);
+      }
+    }));
   }
 }
