@@ -42,7 +42,12 @@ export default {
         description: description,
       };
     } catch (error) {
-      console.error("Ошибка при получении данных:", error.message);
+      const msg = "Ошибка при получении данных:";
+      
+      console.error(msg, error.message);
+      return {
+        description: `${msg} ${error.message}`,
+      };
     }
   }
 }
