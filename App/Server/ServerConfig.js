@@ -15,6 +15,7 @@ export default class ServerConfig {
   
   constructor() {
     this.#app = express();
+    this.payload = {};
     
     dotenv.config();
     
@@ -40,12 +41,16 @@ export default class ServerConfig {
   }
   
   async getControllerListFileName() {
-    const controllersDir = path.join(__dirname, 'Controllers');
+    return await this.getFolderList('Controllers');
+  }
+  
+  async getFolderList(dir = '') {
+    const folderDir = path.join(__dirname, dir);
     
     try {
       // Оборачиваем fs.readdir в Promise
       const files = await new Promise((resolve, reject) => {
-        fs.readdir(controllersDir, (err, files) => {
+        fs.readdir(folderDir, (err, files) => {
           if (err) {
             reject(err); // Передаем ошибку в reject
           } else {
@@ -55,11 +60,20 @@ export default class ServerConfig {
       });
       
       // Фильтруем файлы, оставляя только .js файлы
-      return files.filter(file => path.extname(file) === '.js');
+      return files
+        .filter(file => path.extname(file) === '.js' && path.basename(file, '.js') !== 'base')
+        .map(file => file.replace('.js', ''));
     } catch (err) {
       console.error("Ошибка чтения директории:", err);
       return []; // Возвращаем пустой массив в случае ошибки
     }
+  }
   
+  async getModelsListFileName() {
+    return await this.getFolderList('Models');
+  }
+  
+  addedPayload(parameters = {}) {
+    this.#app = Object.assign(this.#app, this.payload, parameters);
   }
 }

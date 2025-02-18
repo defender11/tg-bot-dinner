@@ -2,17 +2,17 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%- include('partials/header.ejs', {headerTitle: data.headerTitle}) %>
+    <%- include('partials/header.ejs', {headerTitle: headerTitle}) %>
     <%- include('partials/cssBootstrap.ejs') %>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <div class="page-<%= data.tplName.replace('.ejs', '') %>">
-                <h1><%= data.h1 %></h1>
-                <hr />
-                <%- include('pages/' + data.tplName, data) %>
+            <div class="page-<%= tplName %>">
+                <h1><%= h1 %></h1>
+                <hr/>
+                <%- include('pages/' + tplName, payload) %>
             </div>
         </div>
     </div>

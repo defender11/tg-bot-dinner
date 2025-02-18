@@ -1,30 +1,31 @@
-import * as Location from '../../Common/location.js';
-import axios from "axios";
+import {BaseController} from "./base.js";
 
-export default class Index {
+export default class Index extends BaseController {
   
-  #app = null;
   constructor(app) {
-    this.#app = app;
+    super(app);
   }
   
   init() {
-    this.#app.get('/', (req, res) => {
+    this.app.get('/', async (req, res) => {
+      let locations = [];
       
-      const data = {
-        tplName: 'statistic.ejs',
-        h1: 'Статистика',
-        buttonText: 'Нажми меня',
-        headerTitle: 'Статистика',
-        
-        payload: {
-          locations: Location.default.getLocations(),
-          locationsCount: Location.default.getLocationCount(),
-        }
-      };
+      try {
+        locations = await this.getModel('locations')
+          .then(async (model) => await model.getLocationWithVisits());
+      } catch (error) {
+        console.error('Ошибка при получении данных:', error);
+      }
       
       res.render('index', {
-        data: data
+        tplName: 'statistic.ejs',
+        h1: 'Statistics',
+        headerTitle: 'Statistics',
+        
+        payload: {
+          locations: locations,
+          locationsCount: locations.length,
+        },
       });
     });
   }

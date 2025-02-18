@@ -6,13 +6,14 @@ import Weather from "./../Common/weather.js";
 import Holidays from "./../Common/holidays.js";
 import Location from "./../Common/location.js";
 
+
 export default class TGWorkEnvironment {
   constructor() {
   }
   
-  init() {
+  async init() {
     dotenv.config();
-    
+
     const TELEGRAM_BOT_API_KEY = process.env.TELEGRAM_BOT_API_KEY;
     const telegramBot = new TelegramBot(TELEGRAM_BOT_API_KEY, {polling: true, onlyFirstMatch: true});
     const chanelID = process.env.TELEGRAM_CHANEL_ID; // Или @имя_канала, если отправляешь в канал
@@ -58,8 +59,8 @@ export default class TGWorkEnvironment {
       telegramBot.sendMessage(chatID, msg);
     }
     
-    const locationInfo = Location.getLocations();
-    const locationInfoCount = Location.getLocationCount();
+    const locationInfo = await Location.getLocations();
+    const locationInfoCount = locationInfo.length - 1;
     
     async function sendDailyMessage() {
       const today = new Date();
@@ -112,42 +113,38 @@ export default class TGWorkEnvironment {
     });
     
     telegramBot.onText(/\/locations/, async (msg) => {
-      console.log(msg);
-      // return;
-      //
-      // let locationListString = '';
-      //
-      // locationInfo.forEach((location, idx) => {
-      //   locationListString += `${idx}: ${location.name} \n`;
-      // });
-      //
-      // if (
-      //   msg.chat.id === chanelID &&
-      //   msg.chat.type === 'group' || msg.chat.type === 'supergroup'
-      // ) {
-      //   sendToTG(chanelID, locationListString);
-      // }
+      let locationListString = '';
+
+      locationInfo.forEach((location, idx) => {
+        locationListString += `${idx}: ${location.locationName} \n`;
+      });
+      
+      console.log(locationInfo)
+
+      if (
+        // msg.chat.id === chanelID &&
+        msg.chat.type === 'group' || msg.chat.type === 'supergroup'
+      ) {
+        sendToTG(msg.chat.id, locationListString);
+      }
     });
     
     telegramBot.onText(/\/holidays/, async (msg) => {
-      console.log(msg);
-      // return;
-      
-      // let holidaysListString = '';
-      //
-      // Holidays.getHolidaysInfo().forEach((holiday, idx) => {
-      //   holidaysListString += `${holiday.getHumanDate(holiday.date)} | ${holiday.label} \n`;
-      // });
-      //
-      // if (
-      //   msg.chat.id === chanelID &&
-      //   msg.chat.type === 'group' || msg.chat.type === 'supergroup'
-      // ) {
-      //   sendToTG(chanelID, holidaysListString);
-      // }
+      let holidaysListString = '';
+
+      Holidays.getHolidaysInfo().forEach((holiday, idx) => {
+        holidaysListString += `${Holidays.getHumanDate(holiday.date)} | ${holiday.label} \n`;
+      });
+
+      if (
+        // msg.chat.id === chanelID &&
+        msg.chat.type === 'group' || msg.chat.type === 'supergroup'
+      ) {
+        sendToTG(msg.chat.id, holidaysListString);
+      }
     });
     
-    // telegramBot.onText(/\/try_your_luck/, send);
+    telegramBot.onText(/\/try_your_luck/, send);
     
     telegramBot.on("polling_error", err => console.log(err.data.error.message));
     
