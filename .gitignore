@@ -131,3 +131,4 @@ dist
 
 # PHPStorm folder service
 .idea
+.DS_Store
