@@ -1,13 +1,12 @@
 import {DataTypes} from "sequelize";
 import {BaseModel} from "./base.js";
+import locationData from "../../Configs/locations.json" assert {type: "json"};
 
 export default class Locations extends BaseModel {
   constructor() {
-    super('locations');
-  }
-  
-  create() {
-    const parameters = {
+    const firstData = locationData;
+    
+    const createParameters = {
       locationId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -19,46 +18,16 @@ export default class Locations extends BaseModel {
       },
     };
     
-    super.create(parameters);
-  }
-  
-  firstData(payload = []) {
-    const locations = [
-      {locationId: 0, locationName: 'Okey'},
-      {locationId: 1, locationName: 'СуперТяж'},
-      {locationId: 2, locationName: 'Чайхана'},
-      {locationId: 3, locationName: 'Китайцы'},
-      {locationId: 4, locationName: 'Манты возле театра'},
-      {locationId: 5, locationName: 'У Бабушки'},
-      {locationId: 6, locationName: 'Лисёнок'},
-      {locationId: 7, locationName: 'Лоло Пицца'},
-      {locationId: 8, locationName: 'Челентано (внутри)'},
-      {locationId: 9, locationName: 'Челентано (с собой)'},
-      {locationId: 10, locationName: 'Плов на рынке'},
-      {locationId: 11, locationName: 'Лепим Сами'},
-      {locationId: 12, locationName: 'Mr.Garry (Под Лолой Пиццей)'},
-    ];
-    
-    super.firstData(locations);
+    super('locations', createParameters, firstData);
   }
   
   // --------
   
-  async getLocations() {
-    const sql = `SELECT *
-                 FROM ${this.tableName}`;
-    
-    const [results, metadata] = await this.db.query(sql);
-    
-    return results;
-  }
-  
   async getFullInfo() {
-  
+    return [];
   }
   
   async getLocationWithVisits() {
-    
     const sql = `
         SELECT l.locationId,
                l.locationName,
@@ -69,7 +38,7 @@ export default class Locations extends BaseModel {
         GROUP BY s.locationId
     `;
     
-    const [results, metadata] = await this.db.query(sql, {
+    const [results] = await this.db.query(sql, {
       replacements: {currentDate: new Date()},
     });
     
@@ -88,7 +57,7 @@ export default class Locations extends BaseModel {
         WHERE l.locationId = ${locationId}
     `;
     
-    const [results, metadata] = await this.db.query(sql, {
+    const [results] = await this.db.query(sql, {
       replacements: {currentDate: new Date()},
     });
     
@@ -103,7 +72,7 @@ export default class Locations extends BaseModel {
         WHERE locationId = ${locationId}
     `;
     
-    const [results, metadata] = await this.db.query(sql);
+    const [results] = await this.db.query(sql);
     
     return results[0].locationName;
   }

@@ -61,16 +61,20 @@ export default class ServerConfig {
       
       // Фильтруем файлы, оставляя только .js файлы
       return files
-        .filter(file => path.extname(file) === '.js' && path.basename(file, '.js') !== 'base')
+        .filter(file => path.extname(file) === '.js' && !this.getExcludeAutoloadFileList().includes(path.basename(file, '.js')))
         .map(file => file.replace('.js', ''));
     } catch (err) {
-      console.error("Ошибка чтения директории:", err);
+      console.error("Error reading the directory:", err);
       return []; // Возвращаем пустой массив в случае ошибки
     }
   }
   
   async getModelsListFileName() {
     return await this.getFolderList('Models');
+  }
+  
+  getExcludeAutoloadFileList() {
+    return ['base', 'options'];
   }
   
   addedPayload(parameters = {}) {

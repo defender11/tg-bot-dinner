@@ -1,12 +1,11 @@
 import ServerConfig from "./ServerConfig.js";
 
-
 export default class Index {
   
   controllersList = {};
   modelsList = {};
   
-  constructor(props) {
+  constructor() {
   }
   
   async init() {
@@ -18,19 +17,28 @@ export default class Index {
     
     try {
       const serverConfig = new ServerConfig();
+      
       app = await serverConfig.init();
+      
       controllerNames = await serverConfig.getControllerListFileName();
       modelNames = await serverConfig.getModelsListFileName();
       
-      // Предполагаем, что init может быть асинхронным
+      /**
+       * First Loading Options
+       * @type {{readonly default?: *}}
+       */
+      const module = await import('./Models/options.js');
+      if (module.default) {
+        this.modelsList['options'] = await new module.default();
+      }
       
       serverConfig.addedPayload({
         controllersList: this.controllersList,
         modelsList: this.modelsList,
       });
     } catch (error) {
-      console.error("Ошибка инициализации ServerConfig:", error);
-      return;
+      console.error('Initialization error ServerConfig:', error);
+      return false;
       // Прерываем выполнение, если ServerConfig не инициализировался
     }
     
@@ -55,17 +63,22 @@ export default class Index {
                 break;
               case 'Models':
                 this.modelsList[fileName] = new module.default();
+                this.modelsList[fileName].init();
                 break;
               default:
                 break;
             }
           } else {
-            console.warn(`Model ${fileName} не имеет экспорта по умолчанию`);
+            console.warn(`Model ${fileName} has no default export`);
+            return false;
           }
         } catch (err) {
-          console.error(`Ошибка загрузки или инициализации ${fileName}:`, err);
+          console.error(`Loading or initialization error ${fileName}:`, err);
+          return false;
         }
       }
     }
+    
+    return true;
   }
 }

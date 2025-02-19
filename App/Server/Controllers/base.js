@@ -10,4 +10,15 @@ export class BaseController {
     
     return this.app.modelsList[name];
   }
+  
+  async getDBModel(name = '') {
+    if (name === '') {
+      return null;
+    }
+    
+    let modelTransport = await this.getModel(name);
+    let model = await modelTransport.model;
+    
+    return model;
+  }
 }

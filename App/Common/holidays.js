@@ -1,18 +1,17 @@
+import Holidays from "../Server/Models/holidays.js";
+
 export default {
   // Список праздников
-  getHolidaysInfo: function(){
-    return [
-      {date: "2025-01-01", label: 'НГ'},
-      {date: "2025-01-02", label: 'НГ'},
-      {date: "2025-01-07", label: 'Рождество Христово'},
-      {date: "2025-05-01", label: 'Праздник Весны и Труда'},
-      {date: "2025-05-02", label: 'Праздник Весны и Труда'},
-      {date: "2025-05-09", label: 'День Победы'},
-      {date: "2025-06-12", label: 'День России'},
-      {date: "2025-06-13", label: 'День России'},
-      {date: "2025-11-04", label: 'День народного единства'},
-      {date: "2025-12-31", label: 'НГ'},
-    ]
+  getHolidaysInfo: async function () {
+    try {
+      const model = new Holidays();
+      const dbModel = await model.getModel();
+      const rawList = await dbModel.findAll({raw: true});
+      
+      return rawList || [];
+    } catch (e) {
+      console.error('Has problem in Model: ', e.message);
+    }
   },
   
   getHumanDate: function (date) {
@@ -23,7 +22,8 @@ export default {
     });
   },
   
-  getHolidayDates: function(){
-    return this.getHolidaysInfo().map((holiday) => holiday.date);
+  getHolidayDates: async function () {
+    const daysInfo = await this.getHolidaysInfo();
+    return daysInfo.map((holiday) => holiday.dateEvent);
   }
 }

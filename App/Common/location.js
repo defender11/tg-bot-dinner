@@ -1,9 +1,14 @@
 import Locations from "../Server/Models/locations.js";
 
-const locations = new Locations();
-
 export default {
-  getLocations: async function () {
-    return await locations.getLocations();
+  getLocation: async function () {
+    try {
+      const model = new Locations();
+      const list = await model.getLocationWithVisits();
+      
+      return list || [];
+    } catch (e) {
+      console.error('Has problem in Model: ', e.message);
+    }
   },
 }

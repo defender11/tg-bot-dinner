@@ -11,8 +11,8 @@ export default class Index extends BaseController {
       let locations = [];
       
       try {
-        locations = await this.getModel('locations')
-          .then(async (model) => await model.getLocationWithVisits());
+        let locationModel = await this.getModel('locations');
+        locations = await locationModel.getLocationWithVisits();
       } catch (error) {
         console.error('Ошибка при получении данных:', error);
       }

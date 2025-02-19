@@ -35,10 +35,13 @@ export default class TGWorkEnvironment {
     telegramBot.setMyCommands(commands);
     
     // Проверяем, является ли текущая дата рабочим днём
-    function isWorkingDay(date) {
+   async function isWorkingDay(date) {
       const day = date.getDay(); // 0 - вс, 1 - пн, ..., 6 - сб
       const formattedDate = date.toISOString().split("T")[0];
-      return day >= 1 && day <= 5 && !Holidays.getHolidayDates().includes(formattedDate);
+      
+      const holidayDates = await Holidays.getHolidaysInfo();
+      
+      return day >= 1 && day <= 5 && !holidayDates.includes(formattedDate);
     }
     
     function sendToTG(chatID = null, payload) {
@@ -59,12 +62,14 @@ export default class TGWorkEnvironment {
       telegramBot.sendMessage(chatID, msg);
     }
     
-    const locationInfo = await Location.getLocations();
+    const locationInfo = await Location.getLocation();
     const locationInfoCount = locationInfo.length - 1;
     
     async function sendDailyMessage() {
       const today = new Date();
-      if (isWorkingDay(today)) {
+      const isWorkingDayToday = await isWorkingDay(today);
+      
+      if (isWorkingDayToday) {
         // const chosenLocationNumber = await Random.getRandomNumberFromApi(locationInfoCount);
         let chosenLocationNumber = 0;
         
@@ -131,9 +136,11 @@ export default class TGWorkEnvironment {
     
     telegramBot.onText(/\/holidays/, async (msg) => {
       let holidaysListString = '';
-
-      Holidays.getHolidaysInfo().forEach((holiday, idx) => {
-        holidaysListString += `${Holidays.getHumanDate(holiday.date)} | ${holiday.label} \n`;
+      
+      const holidaysInfo = await Holidays.getHolidaysInfo();
+      
+      holidaysInfo.forEach((holiday, idx) => {
+        holidaysListString += `${Holidays.getHumanDate(holiday.dateEvent)} | ${holiday.description} \n`;
       });
 
       if (

@@ -1,19 +1,12 @@
 import {DataTypes} from "sequelize";
 import {BaseModel} from "./base.js";
+import holidaysData from "../../Configs/holidays.json" assert {type: "json"};
 
-export default class Logs extends BaseModel {
+export default class Holidays extends BaseModel {
   constructor() {
+    const firstData = holidaysData;
+    
     const createParameters = {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       dateEvent: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -24,11 +17,10 @@ export default class Logs extends BaseModel {
       }
     };
     
-    super('logs', createParameters);
+    super('holidays', createParameters, firstData);
   }
   
   // --------
-  
 }
 
 
