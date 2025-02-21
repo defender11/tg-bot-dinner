@@ -8,17 +8,17 @@ try {
   const serverStarted = await server.init();
   
   if (serverStarted) {
-    console.log('ServerStarted: ', serverStarted);
+    console.log('Server Started: ', serverStarted);
     
     try {
       setTimeout(async () => {
         await tgWorkEnvironment.init();
-        console.log('Initialization TgWorkEnvironment');
+        console.log('Initialization Telegram Work Environment');
       }, 1000);
     } catch (e) {
-      console.error('Initialization error TgWorkEnvironment:', e);
+      console.error('Initialization error Telegram Work Environment:', e);
     }
   }
 } catch (e) {
-  console.error('Initialization error ServerConfig:', e);
+  console.error('Initialization error Server Config:', e);
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
+    "local": "./node_modules/.bin/node index.js",
     "install-sqlite": "npm install sqlite3 --build-from-source --target_arch=arm64 --fallback-to-build"
   },
   "repository": {
@@ -28,7 +29,8 @@
     "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.66.0",
     "sequelize": "^6.37.5",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "node": "^18.19.1"
   },
   "type": "module"
 }
