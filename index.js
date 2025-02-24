@@ -1,10 +1,8 @@
-import TGWorkEnvironment from "./App/TG/TGWorkEnvironment.js";
 import Server from "./App/Server/index.js";
-
-const server = new Server();
-const tgWorkEnvironment = new TGWorkEnvironment();
+import TGEnvironment from "./App/Telegram/index.js";
 
 try {
+  const server = new Server();
   const serverStarted = await server.init();
   
   if (serverStarted) {
@@ -12,7 +10,8 @@ try {
     
     try {
       setTimeout(async () => {
-        await tgWorkEnvironment.init();
+        const tgEnvironment = new TGEnvironment();
+        await tgEnvironment.init();
         console.log('Initialization Telegram Work Environment');
       }, 1000);
     } catch (e) {

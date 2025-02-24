@@ -1,0 +1,14 @@
+[
+  {
+    "command": "locations",
+    "description": "Список Мест"
+  },
+  {
+    "command": "holidays",
+    "description": "Нерабочие праздничные дни 2025"
+  },
+  {
+    "command": "try_your_luck",
+    "description": "Попытать удачу"
+  }
+]
