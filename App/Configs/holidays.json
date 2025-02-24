@@ -1,0 +1,12 @@
+[
+  {"dateEvent": "2025-01-01", "description": "НГ"},
+  {"dateEvent": "2025-01-02", "description": "НГ"},
+  {"dateEvent": "2025-01-07", "description": "Рождество Христово"},
+  {"dateEvent": "2025-05-01", "description": "Праздник Весны и Труда"},
+  {"dateEvent": "2025-05-02", "description": "Праздник Весны и Труда"},
+  {"dateEvent": "2025-05-09", "description": "День Победы"},
+  {"dateEvent": "2025-06-12", "description": "День России"},
+  {"dateEvent": "2025-06-13", "description": "День России"},
+  {"dateEvent": "2025-11-04", "description": "День народного единства"},
+  {"dateEvent": "2025-12-31", "description": "НГ"}
+]

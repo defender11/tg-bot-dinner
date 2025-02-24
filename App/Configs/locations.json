@@ -1,0 +1,15 @@
+[
+  {"locationId": 0, "locationName": "Okey"},
+  {"locationId": 1, "locationName": "СуперТяж"},
+  {"locationId": 2, "locationName": "Чайхана"},
+  {"locationId": 3, "locationName": "Китайцы"},
+  {"locationId": 4, "locationName": "Манты возле театра"},
+  {"locationId": 5, "locationName": "У Бабушки"},
+  {"locationId": 6, "locationName": "Лисёнок"},
+  {"locationId": 7, "locationName": "Лоло Пицца"},
+  {"locationId": 8, "locationName": "Челентано (внутри)"},
+  {"locationId": 9, "locationName": "Челентано (с собой)"},
+  {"locationId": 10, "locationName": "Плов на рынке"},
+  {"locationId": 11, "locationName": "Лепим Сами"},
+  {"locationId": 12, "locationName": "Mr.Garry (Под Лолой Пиццей)"}
+]
