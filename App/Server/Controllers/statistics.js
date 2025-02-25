@@ -2,7 +2,6 @@ import axios from "axios";
 import {BaseController} from "./base.js";
 
 export default class Statistics extends BaseController {
-  
   constructor(app) {
     super(app);
   }
@@ -24,8 +23,8 @@ export default class Statistics extends BaseController {
         
         return res.json(locationInfoList);
       } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-        return res.status(500).send('Ошибка выполнения запроса');
+        console.error('Error when receiving data:', error);
+        return res.status(500).send('Request error');
       }
     });
   }

@@ -4,7 +4,6 @@ import Weather from "../../Common/weather.js";
 import Location from "../../Common/location.js";
 import {sendToTG} from "../Bot/instance.js";
 
-
 const locationInfo = await Location.getLocation();
 const locationInfoCount = locationInfo.length - 1;
 
@@ -29,9 +28,12 @@ export async function sendDailyMessage(msg) {
     const info = locationInfo[chosenLocationNumber];
     
     const weatherInfo = await Weather.getWeatherFromApi();
-    const msg = `${info.name} | ${weatherInfo.description}`;
     
-    sendToTG(msg.chat.id, msg);
+    const description = `${info.locationName} | ${weatherInfo.description}`;
+    
+    console.log('Send Daily Message', msg.chat.id, JSON.stringify(description));
+    
+    await sendToTG(msg.chat.id, description);
     
     console.log("Message sending: Today is working day.");
   } else {

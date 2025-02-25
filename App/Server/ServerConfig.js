@@ -1,7 +1,6 @@
 import {localIP} from "./../Common/os.js";
 import express from "express";
 import {hotReloadMiddleware} from "@devmade/express-hot-reload";
-import fs from 'fs';
 import path from "path";
 import {fileURLToPath} from 'url';
 import dotenv from "dotenv";

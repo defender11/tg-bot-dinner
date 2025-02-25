@@ -10,5 +10,9 @@
   {
     "command": "try_your_luck",
     "description": "Попытать удачу"
+  },
+  {
+    "command": "ask_ai",
+    "description": "Задать вопрос ИИ"
   }
 ]

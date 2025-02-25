@@ -3,6 +3,9 @@ import {TGBot} from "./Bot/instance.js";
 import {getFolderList} from "../Common/file.js";
 import {fileURLToPath} from "url";
 import path from "path";
+import CommonBus from "./Common/CommonBus.js";
+import cron from "node-cron";
+import {sendDailyMessage} from "./Common/DailyMessage.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +26,7 @@ export default class TGEnvironment {
         },
       }
     };
+    this.commonBus = CommonBus;
   }
   
   async fillEventsFileList() {
@@ -49,7 +53,7 @@ export default class TGEnvironment {
     // Events: 'On'
     for (let eventFileName of this.eventsPathFileList.Events.On.files) {
       const eventPath = this.eventsPathFileList.Events.On.path;
-      TGBot.on(eventFileName, await this.modules[eventPath + eventFileName][eventFileName].init);
+      TGBot.on(eventFileName, async (msg) => await this.modules[eventPath + eventFileName][eventFileName].init(msg));
     }
     
     // Events: 'OnText'
@@ -66,14 +70,22 @@ export default class TGEnvironment {
         }
       );
     }
+    
+    this.cronRun();
   }
   
   cronRun() {
+    dotenv.config();
+    
     // Запуск cron задачи в 12:35 каждый день
-    // cron.schedule("35 12 * * *", send);
+    const msg = {
+      chat: {
+        id: process.env.TELEGRAM_CHANEL_ID
+      }
+    };
     
+    cron.schedule("35 12 * * *", sendDailyMessage.bind(this, msg));
     
-    //
-    // cron.schedule("*/1 * * * *", send);
+    // cron.schedule("*/1 * * * *", sendDailyMessage.bind(this, msg));
   }
 }

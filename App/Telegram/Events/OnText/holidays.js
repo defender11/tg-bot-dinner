@@ -13,10 +13,9 @@ export default {
       });
       
       if (
-        // msg.chat.id === chanelID &&
         msg.chat.type === 'group' || msg.chat.type === 'supergroup'
       ) {
-        sendToTG(msg.chat.id, holidaysListString);
+        await sendToTG(msg.chat.id, holidaysListString);
       }
     }
   }

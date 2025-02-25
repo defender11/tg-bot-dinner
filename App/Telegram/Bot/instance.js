@@ -10,10 +10,10 @@ const telegramBot = new TelegramBot(TELEGRAM_BOT_API_KEY, {polling: true, onlyFi
 export const TGBot = telegramBot;
 export const chanelID = process.env.TELEGRAM_CHANEL_ID; // Или @имя_канала, если отправляешь в канал
 
-export function sendToTG(chatID = null, payload) {
-  if (chatID === null) {
-    chatID = chanelID;
-  }
+export async function sendToTG(chatID = null, payload) {
+  // if (chatID === null) {
+  //   chatID = chanelID;
+  // }
   
   let msg = '';
   
@@ -25,7 +25,7 @@ export function sendToTG(chatID = null, payload) {
     msg = payload;
   }
   
-  TGBot.sendMessage(chatID, msg);
+  const response = await TGBot.sendMessage(chatID, msg);
 }
 
 const commands = commandsData;
