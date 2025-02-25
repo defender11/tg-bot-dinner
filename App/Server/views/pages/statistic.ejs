@@ -1,0 +1,150 @@
+<style>
+  .table-group-divider > tr {
+    cursor: pointer;
+  }
+
+  [data-location_id] > td {
+    /*pointer-events: none;*/
+  }
+</style>
+
+<h6>Locations Count: <%= payload.locationsCount %></h6>
+
+<div class="content">
+    <table class="table table-bordered table-striped table-hover table-condensed table-responsive">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Visits</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        <% payload.locations.forEach(function(location) { %>
+            <tr data-location_id="<%= location.locationId %>">
+                <td><%= location.locationId %></td>
+                <td><%= location.locationName %></td>
+                <td>
+                    <!-- Button trigger modal -->
+                    <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                    >
+                        <%= location.visits || 0 %>
+                    </button>
+                </td>
+            </tr>
+        <% }); %>
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-primary"
+                        id="staticBackdropLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="placeholder-glow">
+                        <span class="placeholder col-12"></span>
+                    </div>
+                    <div class="table-info"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function getFormattedDate(dateString) {
+    const date = new Date(dateString);
+
+    const options = {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    };
+
+    return date.toLocaleDateString('ru-RU', options);
+  }
+
+  const modalButton = document.querySelectorAll('button[data-bs-toggle="modal"]');
+
+  document.addEventListener('click', async function (event) {
+    if (
+      event.target.dataset.location_id ||
+      event.target.closest('tr[data-location_id]')
+    ) {
+      const tableRow = event.target.closest('tr[data-location_id]');
+      const modalButton = tableRow.querySelector('button[data-bs-toggle="modal"]');
+
+      const location_id = tableRow.dataset.location_id;
+
+      const modal = document.querySelector('#staticBackdrop');
+      const modalBody = modal.querySelector('.modal-body');
+      const modalBodyPlaceholder = modalBody.querySelector('.placeholder-glow');
+      const modalBodyTableInfo = modalBody.querySelector('.table-info');
+      const modalTitle = modal.querySelector('.modal-title');
+
+      modalBodyPlaceholder.style.display = 'block';
+
+      setTimeout(function () {
+        if (!modal.classList.contains('show')) {
+          modalButton.click();
+        }
+      }, 400);
+
+      try {
+        const response = await fetch(`/statistic/location/${location_id}`);
+
+        if (!response.ok) {
+          throw new Error('Ошибка сети');
+        }
+
+        const data = await response.json();
+
+        modalTitle.innerHTML = `${data.name} <p><small class='fs-6 text-secondary'>Visits: ${data.list.length}</small></p>`;
+
+        let trList = '';
+
+        for (let i = 0; i < data.list.length; i++) {
+          const tr = data.list[i];
+
+          trList += `
+            <tr class="info">
+                <td class="date">${getFormattedDate(tr.dateEvent)}</td>
+                <td class="description">${tr.weatherDegrees}${data.degreesSymbol} | ${tr.weatherDescription}</td>
+            </tr>
+          `;
+        }
+
+        modalBodyTableInfo.innerHTML = `
+    <table class="table table-bordered table-striped table-hover table-condensed table-responsive">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Weather</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">${trList}</tbody>
+    </table>`;
+
+        modalBodyPlaceholder.style.display = 'none';
+      } catch (error) {
+        console.error('Ошибка при получении статистики:', error.message);
+      }
+    }
+  });
+</script>

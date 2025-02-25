@@ -22,11 +22,11 @@ export default {
       });
       
       const randomNumber = parseInt(response.data, 10);
-      console.log(`Случайное число: ${randomNumber}`);
+      console.log(`Random number: ${randomNumber}`);
       
       return randomNumber;
     } catch (error) {
-      console.error('Ошибка при получении случайного числа:', error);
+      console.error('Error when receiving a random number:', error);
       return -1;
     }
   }
