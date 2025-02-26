@@ -1,4 +1,5 @@
 import ServerConfig from "./ServerConfig.js";
+import {printCLWithTime} from "../Common/Log.js";
 
 export default class Index {
   
@@ -37,7 +38,7 @@ export default class Index {
         modelsList: this.modelsList,
       });
     } catch (error) {
-      console.error('Initialization error ServerConfig:', error);
+      printCLWithTime('error', 'Initialization error ServerConfig:', error);
       return false;
       // Прерываем выполнение, если ServerConfig не инициализировался
     }
@@ -69,11 +70,11 @@ export default class Index {
                 break;
             }
           } else {
-            console.warn(`Model ${fileName} has no default export`);
+            printCLWithTime('warn', `Model ${fileName} has no default export`);
             return false;
           }
         } catch (err) {
-          console.error(`Loading or initialization error ${fileName}:`, err);
+          printCLWithTime('error', `Loading or initialization error ${fileName}:`, err);
           return false;
         }
       }

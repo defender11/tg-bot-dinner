@@ -143,7 +143,7 @@
 
         modalBodyPlaceholder.style.display = 'none';
       } catch (error) {
-        console.error('Ошибка при получении статистики:', error.message);
+        printCLWithTime('error', 'Ошибка при получении статистики:', error.message);
       }
     }
   });

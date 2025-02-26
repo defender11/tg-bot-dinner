@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import axios from "axios";
+import {printCLWithTime} from "./Log.js";
 
 
 export default {
@@ -23,7 +24,7 @@ export default {
       
       const locationKey = locationResponse.data.Key;
       const cityName = locationResponse.data.LocalizedName;
-      console.log(`Found Location: ${cityName}, LocationKey: ${locationKey}`);
+      printCLWithTime('log', `Found Location: ${cityName}, LocationKey: ${locationKey}`);
       
       const weatherResponse = await axios.get(`${baseUrl}/currentconditions/v1/${locationKey}`, {
         params: {
@@ -35,7 +36,7 @@ export default {
       const weather = weatherResponse.data[0];
       const description = `Погода: ${weather.Temperature.Metric.Value}°C, ${weather.WeatherText}`;
       
-      console.log(description);
+      printCLWithTime('log', description);
       
       return {
         weather,
@@ -44,7 +45,7 @@ export default {
     } catch (error) {
       const msg = "Ошибка при получении данных:";
       
-      console.error(msg, error.message);
+      printCLWithTime('error', msg, error.message);
       return {
         description: `${msg} ${error.message}`,
       };

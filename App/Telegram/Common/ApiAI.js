@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import {printCLWithTime} from "../../Common/Log.js";
 
 export class ApiAI {
   constructor() {
@@ -72,7 +73,7 @@ export class ApiAI {
   async getAnswer(question = '') {
     let modelsList = [];
     try {
-      console.log('Getting Models List');
+      printCLWithTime('log', 'Getting Models List');
       
       modelsList = await fetch(this.getUrl('models'))
         .then(response => response.json())
@@ -83,16 +84,16 @@ export class ApiAI {
         );
       
       if (!modelsList.length) {
-        console.error('Models not found.');
+        printCLWithTime('error', 'Models not found.');
         return;
       }
     } catch (e) {
-      console.error('Сouldn\'t get api data.', e.message);
+      printCLWithTime('error', 'Сouldn\'t get api data.', e.message);
       return;
     }
     
-    console.log(modelsList);
-    console.log('Prepared Models Request Data');
+    printCLWithTime('log', modelsList);
+    printCLWithTime('log', 'Prepared Models Request Data');
     
     const preparedModelsRequestData = modelsList.reduce(
       (list, model) => {
@@ -108,7 +109,7 @@ export class ApiAI {
     // Запускаем все запросы параллельно
     const modelPromises = preparedModelsRequestData.map(model => this.queryModel(model));
     
-    console.log('Request Parallels to Answer');
+    printCLWithTime('log', 'Request Parallels to Answer');
     
     console.time('request_parallels_to_answer');
     
@@ -120,7 +121,7 @@ export class ApiAI {
           if (result.status === 'fulfilled') {
             let answer = result.value.choices[0].message.content;
             
-            console.log(`Model ${index + 1} success responded:`, answer);
+            printCLWithTime('log', `Model ${index + 1} success responded:`, answer);
             
             let responseData = {
               model: result.value.model,
@@ -131,7 +132,7 @@ export class ApiAI {
             
             responseList.push(responseData);
           } else {
-            console.log(`Error from model ${index + 1}:`, result.reason);
+            printCLWithTime('log', `Error from model ${index + 1}:`, result.reason);
           }
         });
         

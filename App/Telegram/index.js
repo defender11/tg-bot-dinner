@@ -6,6 +6,7 @@ import path from "path";
 import CommonBus from "./Common/CommonBus.js";
 import cron from "node-cron";
 import {sendDailyMessage} from "./Common/DailyMessage.js";
+import {printCLWithTime} from "../Common/Log.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,30 +49,38 @@ export default class TGEnvironment {
   async init() {
     dotenv.config();
     
-    await this.fillEventsFileList();
-    
-    // Events: 'On'
-    for (let eventFileName of this.eventsPathFileList.Events.On.files) {
-      const eventPath = this.eventsPathFileList.Events.On.path;
-      TGBot.on(eventFileName, async (msg) => await this.modules[eventPath + eventFileName][eventFileName].init(msg));
+    try {
+      await this.fillEventsFileList();
+      
+      // Events: 'On'
+      for (let eventFileName of this.eventsPathFileList.Events.On.files) {
+        const eventPath = this.eventsPathFileList.Events.On.path;
+        TGBot.on(eventFileName, async (msg) => await this.modules[eventPath + eventFileName][eventFileName].init(msg));
+      }
+      
+      // Events: 'OnText'
+      for (let eventFileName of this.eventsPathFileList.Events.OnText.files) {
+        const eventPath = this.eventsPathFileList.Events.OnText.path;
+        
+        // Предполагаем, что имя файла без расширения — это команда без слеша в начале
+        // Например, файл "holidays.js" будет обрабатывать команду "/holidays"
+        const commandPattern = `\\/${eventFileName}`;
+        
+        TGBot.onText(new RegExp(commandPattern),
+          async (msg, match) => {
+            await this.modules[eventPath + eventFileName][eventFileName].init(msg, match);
+          }
+        );
+      }
+      
+      this.cronRun();
+    } catch (err) {
+      printCLWithTime('error', 'Modules init error', err.message);
+      return false;
     }
     
-    // Events: 'OnText'
-    for (let eventFileName of this.eventsPathFileList.Events.OnText.files) {
-      const eventPath = this.eventsPathFileList.Events.OnText.path;
-      
-      // Предполагаем, что имя файла без расширения — это команда без слеша в начале
-      // Например, файл "holidays.js" будет обрабатывать команду "/holidays"
-      const commandPattern = `\\/${eventFileName}`;
-      
-      TGBot.onText(new RegExp(commandPattern),
-        async (msg, match) => {
-          await this.modules[eventPath + eventFileName][eventFileName].init(msg, match);
-        }
-      );
-    }
     
-    this.cronRun();
+    return true;
   }
   
   cronRun() {

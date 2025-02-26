@@ -1,4 +1,5 @@
 import {BaseController} from "./base.js";
+import {printCLWithTime} from "../../Common/Log.js";
 
 export default class Index extends BaseController {
   
@@ -14,7 +15,7 @@ export default class Index extends BaseController {
         let locationModel = await this.getModel('locations');
         locations = await locationModel.getLocationWithVisits();
       } catch (error) {
-        console.error('Error when receiving data:', error);
+        printCLWithTime('error', 'Error when receiving data:', error);
       }
       
       res.render('index', {

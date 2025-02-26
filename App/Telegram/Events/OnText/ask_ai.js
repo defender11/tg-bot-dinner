@@ -1,6 +1,7 @@
 import {TGBot} from "../../Bot/instance.js";
 import {ApiAI} from "../../Common/ApiAI.js";
 import CommonBus from "./../../Common/CommonBus.js";
+import {printCLWithTime} from "../../../Common/Log.js";
 
 function getPreparedUserQueueQuestion(msg) {
   return {
@@ -70,9 +71,9 @@ Model: ${a.model},
 ${a.answer}`;
               
               TGBot.sendMessage(chatID, preparedDescription, {parse_mode: 'Markdown'})
-                .then(() => console.log('The answer from AI was sent to TG'))
+                .then(() => printCLWithTime('log', 'The answer from AI was sent to TG'))
                 .catch(async (e) => {
-                  console.warn('Failed to send an answer From AI to TG', e);
+                  printCLWithTime('warn', 'Failed to send an answer From AI to TG', e);
                   await this.init(msg);
                 });
               
@@ -86,8 +87,8 @@ ${a.answer}`;
             ...deletedMessagesPromise,
             TGBot.deleteMessage(chatID, msgResponse.message_id)
           ])
-            .then(() => console.log('Messages are successfully deleted'))
-            .catch((err) => console.error('Has error to deleted messages', err))
+            .then(() => printCLWithTime('log', 'Messages are successfully deleted'))
+            .catch((err) => printCLWithTime('error', 'Has error to deleted messages', err))
             .finally(() => delete (CommonBus.usersQueueQuestions[userID]));
           
           return;

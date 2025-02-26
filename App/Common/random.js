@@ -1,4 +1,5 @@
 import axios from "axios";
+import {printCLWithTime} from "./Log.js";
 
 export default {
   getLocalRandomInt: function (min, max) {
@@ -22,11 +23,11 @@ export default {
       });
       
       const randomNumber = parseInt(response.data, 10);
-      console.log(`Random number: ${randomNumber}`);
+      printCLWithTime('log', `Random number: ${randomNumber}`);
       
       return randomNumber;
     } catch (error) {
-      console.error('Error when receiving a random number:', error);
+      printCLWithTime('error', 'Error when receiving a random number:', error);
       return -1;
     }
   }

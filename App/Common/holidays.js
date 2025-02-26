@@ -1,4 +1,5 @@
 import Holidays from "../Server/Models/holidays.js";
+import {printCLWithTime} from "./Log.js";
 
 export default {
   // Список праздников
@@ -10,7 +11,7 @@ export default {
       
       return rawList || [];
     } catch (e) {
-      console.error('Has problem in Model: ', e.message);
+      printCLWithTime('error', 'Has problem in Model: ', e.message);
     }
   },
   

@@ -1,4 +1,5 @@
 import Locations from "../Server/Models/locations.js";
+import {printCLWithTime} from "./Log.js";
 
 export default {
   getLocation: async function () {
@@ -8,7 +9,7 @@ export default {
       
       return list || [];
     } catch (e) {
-      console.error('Has problem in Model: ', e.message);
+      printCLWithTime('error', 'Has problem in Model: ', e.message);
     }
   },
 }

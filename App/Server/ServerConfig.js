@@ -5,6 +5,7 @@ import path from "path";
 import {fileURLToPath} from 'url';
 import dotenv from "dotenv";
 import {getFolderList} from "../Common/file.js";
+import {printCLWithTime} from "../Common/Log.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +35,7 @@ export default class ServerConfig {
     this.#app.set('view engine', 'ejs');
     
     this.#app.listen(this.#port, localIP, () => {
-      console.log(`Server listening at http://${localIP}:${this.#port}`);
+      printCLWithTime('log', `Server listening at http://${localIP}:${this.#port}`);
     });
     
     return this.#app;

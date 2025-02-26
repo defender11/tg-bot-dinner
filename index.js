@@ -1,23 +1,25 @@
 import Server from "./App/Server/index.js";
 import TGEnvironment from "./App/Telegram/index.js";
+import {printCLWithTime} from "./App/Common/Log.js";
 
 try {
   const server = new Server();
   const serverStarted = await server.init();
   
   if (serverStarted) {
-    console.log('Server Started: ', serverStarted);
+    printCLWithTime('log', 'Server Side Started');
     
     try {
       setTimeout(async () => {
         const tgEnvironment = new TGEnvironment();
         await tgEnvironment.init();
-        console.log('Initialization Telegram Work Environment');
+        
+        printCLWithTime('log', 'Telegram Work Environment Started');
       }, 1000);
     } catch (e) {
-      console.error('Initialization error Telegram Work Environment:', e);
+      printCLWithTime('error', 'Initialization error Telegram Work Environment:', e);
     }
   }
 } catch (e) {
-  console.error('Initialization error Server Config:', e);
+  printCLWithTime('error', 'Initialization error Server Config:', e);
 }

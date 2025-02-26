@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import {fileURLToPath} from "url";
+import {printCLWithTime} from "./Log.js";
 
 export async function getFolderList(dir = '', __dirname = '', excludeAutoloadFileList = []) {
   if (__dirname === '') {
@@ -27,7 +28,7 @@ export async function getFolderList(dir = '', __dirname = '', excludeAutoloadFil
       .filter(file => path.extname(file) === '.js' && !excludeAutoloadFileList.includes(path.basename(file, '.js')))
       .map(file => file.replace('.js', ''));
   } catch (err) {
-    console.error("Error reading the directory:", err);
+    printCLWithTime('error', "Error reading the directory:", err);
     return []; // Возвращаем пустой массив в случае ошибки
   }
 }

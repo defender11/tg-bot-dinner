@@ -1,5 +1,5 @@
-import axios from "axios";
 import {BaseController} from "./base.js";
+import {printCLWithTime} from "../../Common/Log.js";
 
 export default class Statistics extends BaseController {
   constructor(app) {
@@ -23,7 +23,7 @@ export default class Statistics extends BaseController {
         
         return res.json(locationInfoList);
       } catch (error) {
-        console.error('Error when receiving data:', error);
+        printCLWithTime('error', 'Error when receiving data:', error);
         return res.status(500).send('Request error');
       }
     });

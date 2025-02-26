@@ -1,7 +1,9 @@
+import {printCLWithTime} from "../../../Common/Log.js";
+
 export default {
   polling_error: {
     init: async (err) => {
-      console.log(err.data.error.message)
+      printCLWithTime('error', err.data.error.message)
     }
   }
 }

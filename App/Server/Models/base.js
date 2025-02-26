@@ -1,4 +1,5 @@
 import sequelize from '../../Common/db.js';
+import {printCLWithTime} from "../../Common/Log.js";
 
 export class BaseModel {
   constructor(tableName, createParameters, payload = []) {
@@ -16,13 +17,13 @@ export class BaseModel {
     try {
       await this.db.sync();
       
-      console.log(`Model ${this.tableName} synchronized with the database.`);
+      printCLWithTime('log', `Model ${this.tableName} synchronized with the database.`);
       
       if (this.payload.length) {
         await this.firstData();
       }
     } catch (error) {
-      console.error(`Model synchronization error:`, error);
+      printCLWithTime('error', `Model synchronization error:`, error);
     }
   }
   
@@ -41,9 +42,9 @@ export class BaseModel {
     
     try {
       await this.markFirstData();
-      console.log(`Mark First Data completed for ${this.tableName}`);
+      printCLWithTime('log', `Mark First Data completed for ${this.tableName}`);
     } catch (error) {
-      console.warn(error.message);
+      printCLWithTime('warn', error.message);
     }
   }
   
